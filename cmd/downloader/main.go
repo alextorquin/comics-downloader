@@ -78,6 +78,7 @@ func main() {
 		Format:       format,
 		Daemon:       daemon,
 		Timeout:      timeout,
+		OutputFolder: outputFolder,
 	}
 
 	app.Run(options)

@@ -90,7 +90,8 @@ func PathSetup(outputFolder, source, name string) (string, error) {
 	var dir string
 	var err error
 
-	dir, err = filepath.Abs(fmt.Sprintf("%s/comics/%s/%s/", outputFolder, source, name))
+	//dir, err = filepath.Abs(fmt.Sprintf("%s/comics/%s/%s/", outputFolder, source, name))
+	dir, err = filepath.Abs(fmt.Sprintf("%s/%s/", outputFolder, name))
 
 	if err != nil {
 		return dir, err
@@ -109,7 +110,7 @@ func ImagesPathSetup(outputFolder, source, name, issueNumber string) (string, er
 	var dir string
 	var err error
 
-	dir, err = filepath.Abs(fmt.Sprintf("%s/comics/%s/%s/images-%s/", outputFolder, source, name, issueNumber))
+	dir, err = filepath.Abs(fmt.Sprintf("%s/%s/images-%s/", outputFolder, name, issueNumber))
 
 	if err != nil {
 		return dir, err
