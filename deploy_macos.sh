@@ -1,7 +1,8 @@
 #!/bin/zsh
 
 DEST=/Users/alex/bin
+SRC=/Users/alex/src/comics-downloader
 
-cp download_comics.sh $DEST
-cp comics_urls.txt $DEST
-cp comics-downloader $DEST
+go build -o comics-downloader $SRC/cmd/downloader
+
+ln -s $SRC/download_comics.sh $DEST/download_comics.sh

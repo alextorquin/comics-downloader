@@ -1,5 +1,5 @@
 #!/bin/bash
 
-URL=($(cat comics_urls.txt | tr -s "\n" ","))
+URL=($(cat "/Volumes/Expansion/Nubes/Google Drive/comics-downloader_urls.txt" | tr -s "\n" ","))
 
-./comics-downloader -format=cbr -url=$URL -output=/mnt/EXTENSION/Comictor
+/Users/Alex/src/comics-downloader/comics-downloader -format=cbr -url=$URL -output=/Volumes/Filmoteca/Comictor
