@@ -43,6 +43,7 @@ func checkErr(err error, bindLogsToChannel bool, comic *core.Comic) {
 }
 
 func download(options *config.Options, bindLogsToChannel bool) {
+
 	if options.OutputFolder == "" {
 		options.OutputFolder = filepath.Dir(os.Args[0])
 	}
@@ -85,7 +86,7 @@ func download(options *config.Options, bindLogsToChannel bool) {
 
 			for _, comic := range collection {
 				if options.ImagesOnly {
-					_, err = comic.DownloadImages(options.OutputFolder)
+					_, err, _ = comic.DownloadImages(options.OutputFolder)
 				} else {
 					err = comic.MakeComic(options.OutputFolder)
 				}

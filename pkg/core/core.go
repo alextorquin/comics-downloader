@@ -1,7 +1,6 @@
 package core
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,8 +9,6 @@ import (
 	"time"
 
 	"github.com/Girbons/comics-downloader/pkg/util"
-	epub "github.com/bmaupin/go-epub"
-	"github.com/jung-kurt/gofpdf"
 	"github.com/mholt/archiver"
 	"github.com/schollz/progressbar/v2"
 	log "github.com/sirupsen/logrus"
@@ -42,7 +39,8 @@ type Comic struct {
 
 // makeEPUB create the epub file
 func (comic *Comic) makeEPUB(outputFolder string) error {
-	var err error
+	/*var err error
+	var incompleto bool = false
 
 	currentDir, err := util.CurrentDir()
 	if err != nil {
@@ -61,7 +59,7 @@ func (comic *Comic) makeEPUB(outputFolder string) error {
 		e.SetAuthor(comic.Author)
 	}
 
-	imagesPath, err := comic.DownloadImages(outputFolder)
+	imagesPath, err, incompleto := comic.DownloadImages(outputFolder)
 	if err != nil {
 		return err
 	}
@@ -107,16 +105,19 @@ func (comic *Comic) makeEPUB(outputFolder string) error {
 	}
 
 	log.Info(fmt.Sprintf("%s %s", strings.ToUpper(comic.Format), DEFAULT_MESSAGE))
-	return err
+	return err*/
+	return nil
 }
 
 // makePDF create the pdf file
 func (comic *Comic) makePDF(outputFolder string) error {
-	var err error
+	/*var err error
+	var incompleto bool = false
+
 	// setup the pdf
 	pdf := gofpdf.New("P", "mm", "A4", "")
 
-	imagesPath, err := comic.DownloadImages(outputFolder)
+	imagesPath, err, incompleto := comic.DownloadImages(outputFolder)
 	if err != nil {
 		return err
 	}
@@ -156,18 +157,20 @@ func (comic *Comic) makePDF(outputFolder string) error {
 	}
 
 	log.Info(fmt.Sprintf("%s %s", strings.ToUpper(comic.Format), DEFAULT_MESSAGE))
-	return err
+	return err*/
+	return nil
 }
 
 // makeCBRZ will create the CBR/CBZ
 func (comic *Comic) makeCBRZ(outputFolder string) error {
 	var filesToAdd []string
 	var err error
+	var failedImages []int
 
 	// setup a new Epub instance
 	archive := archiver.NewZip()
 
-	imagesPath, err := comic.DownloadImages(outputFolder)
+	imagesPath, err, failedImages := comic.DownloadImages(outputFolder)
 	if err != nil {
 		return err
 	}
@@ -189,8 +192,24 @@ func (comic *Comic) makeCBRZ(outputFolder string) error {
 	}
 	// the archive must be created as .zip
 	// then we can change the extension to .cbr or .cbz
+	var suffix string = ""
+	if len(failedImages) > 0 {
+		f, err := os.OpenFile(dir+"/"+comic.Name+"_failed_images.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		f.WriteString(fmt.Sprintf("\n\n%s-%s\n", comic.Name, comic.IssueNumber))
+		if err != nil {
+			// FIXME
+		}
+		defer f.Close()
+		for i := 0; i < len(failedImages); i++ {
+			f.WriteString(fmt.Sprintf("%d;", failedImages[i]))
+		}
+		suffix = "_INCOMPLETO"
+	}
 	zipArchiveName := fmt.Sprintf("%s/%s.zip", dir, comic.IssueNumber)
-	newName := util.GenerateFileName(dir, comic.Name, comic.IssueNumber, comic.Format)
+	newName := util.GenerateFileName(dir, comic.Name, comic.IssueNumber+suffix, comic.Format)
 
 	if err = archive.Archive(filesToAdd, zipArchiveName); err != nil {
 		return err
@@ -205,29 +224,30 @@ func (comic *Comic) makeCBRZ(outputFolder string) error {
 }
 
 // DownloadImages will download the comic/manga images
-func (comic *Comic) DownloadImages(outputFolder string) (string, error) {
+func (comic *Comic) DownloadImages(outputFolder string) (string, error, []int) {
 	var dir string
 	var err error
+	var failedImages []int
 
 	dir, err = util.ImagesPathSetup(outputFolder, comic.Source, comic.Name, comic.IssueNumber)
 	if err != nil {
-		return dir, err
+		return dir, err, failedImages
 	}
 
 	files, err := ioutil.ReadDir(dir)
 	if err != nil {
-		return dir, err
+		return dir, err, failedImages
 	}
 
 	if !util.DirectoryOrFileDoesNotExist(dir) && len(files) == len(comic.Links) {
-		return dir, err
+		return dir, err, failedImages
 	}
 
 	format := util.ImageType(comic.ImagesFormat)
 
 	currentDir, err := util.CurrentDir()
 	if err != nil {
-		return dir, err
+		return dir, err, failedImages
 	}
 
 	// setup the progress bar
@@ -235,7 +255,7 @@ func (comic *Comic) DownloadImages(outputFolder string) (string, error) {
 
 	err = os.Chdir(dir)
 	if err != nil {
-		return dir, err
+		return dir, err, failedImages
 	}
 
 	client := &http.Client{
@@ -249,19 +269,21 @@ func (comic *Comic) DownloadImages(outputFolder string) (string, error) {
 		if link != "" {
 			rsp, err := client.Get(link)
 			if err != nil {
-				return dir, err
+				return dir, err, failedImages
 			}
 			defer rsp.Body.Close()
 
 			imgFile, err := os.Create(fmt.Sprintf("%04d-image.%s", i, format))
 			if err != nil {
-				return dir, err
+				return dir, err, failedImages
 			}
 			defer imgFile.Close()
 
 			err = util.SaveImage(imgFile, rsp.Body, format)
 			if err != nil {
-				return dir, err
+				failedImages = append(failedImages, i)
+				continue
+				//return dir, err
 			}
 		}
 
@@ -272,10 +294,10 @@ func (comic *Comic) DownloadImages(outputFolder string) (string, error) {
 
 	err = os.Chdir(currentDir)
 	if err != nil {
-		return dir, err
+		return dir, err, failedImages
 	}
 
-	return dir, err
+	return dir, err, failedImages
 }
 
 // MakeComic will create the file based on the output format selected.

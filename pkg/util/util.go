@@ -162,6 +162,10 @@ func Parse(s string) string {
 func SaveImage(w io.Writer, content io.Reader, format string) error {
 	img, _, err := image.Decode(content)
 
+	if err != nil {
+		return errors.New("Image not found or corrupt. Comic not completed.")
+		//return nil
+	}
 	switch strings.ToLower(format) {
 	case "img":
 		_, err = io.Copy(w, content)
