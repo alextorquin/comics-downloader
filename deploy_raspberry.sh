@@ -11,4 +11,4 @@ go build -o target/comics-downloader/comics-downloader $DIR/cmd/downloader
 
 cp scripts/* target/comics-downloader/
 
-scp -r target/comics-downloader $DEST
+cp -r target/comics-downloader $DEST
