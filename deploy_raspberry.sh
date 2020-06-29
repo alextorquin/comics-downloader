@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 DEST=/home/pi/bin
 
