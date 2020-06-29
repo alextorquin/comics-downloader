@@ -1,9 +1,14 @@
 #!/bin/zsh
 
 DEST=/Users/alex/bin
-SRC=/Users/alex/src/comics-downloader
 
-go build -o comics-downloader $SRC/cmd/downloader
+# obtener directorio de este script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-rm $DEST/download_comics.sh
-ln -s $SRC/download_comics.sh $DEST/download_comics.sh
+rm -rf target/*
+
+go build -o target/comics-downloader/comics-downloader $DIR/cmd/downloader
+
+cp scripts/* target/comics-downloader/
+rm -rf $DEST/comics-downloader
+cp -rf target/comics-downloader $DEST

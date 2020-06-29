@@ -78,7 +78,7 @@ func TestDownloadImagesPNGFormat(t *testing.T) {
 	comic.Links = []string{"http://via.placeholder.com/150", "http://via.placeholder.com/150", "http://via.placeholder.com/150"}
 	comic.ImagesFormat = "png"
 
-	dir, err := comic.DownloadImages(filepath.Dir(os.Args[0]))
+	dir, err, _ := comic.DownloadImages(filepath.Dir(os.Args[0]))
 	files, _ := ioutil.ReadDir(dir)
 
 	assert.Nil(t, err)
@@ -94,7 +94,7 @@ func TestDownloadImagesJPGFormat(t *testing.T) {
 	comic.Links = []string{"http://via.placeholder.com/150", "http://via.placeholder.com/150", "http://via.placeholder.com/150"}
 	comic.ImagesFormat = "jpg"
 
-	dir, err := comic.DownloadImages(filepath.Dir(os.Args[0]))
+	dir, err, _ := comic.DownloadImages(filepath.Dir(os.Args[0]))
 	files, _ := ioutil.ReadDir(dir)
 
 	assert.Nil(t, err)
@@ -110,7 +110,7 @@ func TestDownloadImagesJPEGFormat(t *testing.T) {
 	comic.ImagesFormat = "jpeg"
 	comic.Links = []string{"http://via.placeholder.com/150", "http://via.placeholder.com/150", "http://via.placeholder.com/150"}
 
-	dir, err := comic.DownloadImages(filepath.Dir(os.Args[0]))
+	dir, err, _ := comic.DownloadImages(filepath.Dir(os.Args[0]))
 	files, _ := ioutil.ReadDir(dir)
 
 	assert.Nil(t, err)
@@ -126,7 +126,7 @@ func TestDownloadImagesIMGFormat(t *testing.T) {
 	comic.Links = []string{"http://via.placeholder.com/150", "http://via.placeholder.com/150", "http://via.placeholder.com/150"}
 	comic.ImagesFormat = "img"
 
-	dir, err := comic.DownloadImages(filepath.Dir(os.Args[0]))
+	dir, err, _ := comic.DownloadImages(filepath.Dir(os.Args[0]))
 	files, _ := ioutil.ReadDir(dir)
 
 	assert.Nil(t, err)

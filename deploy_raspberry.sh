@@ -1,10 +1,14 @@
-#!/bin/bash
+#!/bin/zsh
 
-DEST=/home/pi/bin/comics-downloader
-SRC=/home/pi/Trabajo/comics-downloader
+DEST=pi@192.168.1.70:/home/pi/bin
 
-go build -o comics-downloader $SRC/cmd/downloader
+# obtener directorio de este script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-cp download_comics.sh $DEST
-cp comics_urls.txt $DEST
-cp comics-downloader $DEST
+rm -rf target/*
+
+go build -o target/comics-downloader/comics-downloader $DIR/cmd/downloader
+
+cp scripts/* target/comics-downloader/
+
+scp -r target/comics-downloader $DEST
