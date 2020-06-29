@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-DEST=pi@192.168.1.70:/home/pi/bin
+DEST=/home/pi/bin
 
 # obtener directorio de este script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
