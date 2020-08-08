@@ -1,15 +1,22 @@
 package sites
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
 	"github.com/Girbons/comics-downloader/pkg/core"
 	"github.com/Girbons/comics-downloader/pkg/util"
 	"github.com/anaskhan96/soup"
+	log "github.com/sirupsen/logrus"
 )
 
 type Comicextra struct{}
+
+func init() {
+	// use log INFO Level
+	log.SetLevel(log.InfoLevel)
+}
 
 func (c *Comicextra) retrieveImageLinks(comic *core.Comic) ([]string, error) {
 	var links []string
@@ -62,6 +69,7 @@ func (c *Comicextra) retrieveLastIssue(url string) (string, error) {
 
 // RetrieveIssueLinks gets a slice of urls for all issues in a comic
 func (c *Comicextra) RetrieveIssueLinks(url string, all, last bool) ([]string, error) {
+
 	if last {
 		issue, err := c.retrieveLastIssue(url)
 		return []string{issue}, err
@@ -74,8 +82,8 @@ func (c *Comicextra) RetrieveIssueLinks(url string, all, last bool) ([]string, e
 	}
 
 	// retrieve pages before
-
 	name := util.TrimAndSplitURL(url)[4]
+
 	var (
 		pages    []string
 		links    []string
@@ -86,12 +94,15 @@ func (c *Comicextra) RetrieveIssueLinks(url string, all, last bool) ([]string, e
 	// remove the page that comes within the url
 	parts := strings.Split(url, "/")
 	if len(parts) >= 6 {
+		log.Info("do not handle pagination")
 		url = parts[0] + "//" + parts[2] + "/" + parts[3] + "/" + parts[4]
 	}
 
 	// and start from 1
-	pages = append(pages, url+"/1")
-
+	//pages = append(pages, url+"/1")
+	for i := 1; i < 100; i++ {
+		pages = append(pages, fmt.Sprintf(url+"/%d", i))
+	}
 	response, err := soup.Get(url)
 	if err != nil {
 		return nil, err
@@ -107,7 +118,7 @@ func (c *Comicextra) RetrieveIssueLinks(url string, all, last bool) ([]string, e
 	for _, element := range elements {
 		pageURL := element.Attrs()["href"]
 		if !strings.Contains(pageURL, "onclick") && !util.IsValueInSlice(pageURL, pages) {
-			pages = append(pages, pageURL)
+			//pages = append(pages, pageURL)
 		}
 	}
 

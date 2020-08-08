@@ -7,7 +7,13 @@ import (
 	"github.com/Girbons/comics-downloader/pkg/config"
 	"github.com/Girbons/comics-downloader/pkg/core"
 	"github.com/Girbons/comics-downloader/pkg/util"
+	log "github.com/sirupsen/logrus"
 )
+
+func init() {
+	// use log INFO Level
+	log.SetLevel(log.InfoLevel)
+}
 
 func initializeCollection(issues []string, options *config.Options, base BaseSite) ([]*core.Comic, error) {
 	var collection []*core.Comic
