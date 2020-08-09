@@ -6,8 +6,8 @@ then
     #DEST="/Volumes/comic/Comictor"
     DEST="/Users/Alex/Downloads"
 else
-    URL_PATH="/var/services/homes/Alex/Drive/Comic_Downloader_URL_Files/"
-    DEST="/volume1/comic/Comictor"
+    URL_PATH="/mnt/Alex/Drive/Comic_Downloader_URL_Files/"
+    DEST="/mnt/comic/Comictor"
 fi
 
 # obtener directorio de este script
