@@ -1,5 +1,5 @@
 #!/bin/bash
-echo $1
+
 if [[ $OSTYPE == *"darwin"* ]] 
 then
     URL_PATH="/Volumes/home/Drive/Comic_Downloader_URL_Files/"
