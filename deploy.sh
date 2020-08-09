@@ -1,6 +1,11 @@
 #!/bin/bash
 
-DEST=/Users/alex/bin
+if [[ $OSTYPE == *"darwin"* ]] 
+then
+ DEST=/Users/alex/bin
+else
+ DEST=/home/pi/bin
+fi
 
 # obtener directorio de este script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -13,8 +18,4 @@ cp scripts/* target/comics-downloader/
 cp -rf target/comics-downloader $DEST
 
 
-if [[ $1 == *"tornas"* ]] 
-then
- scp -r $DEST/comics-downloader pi@192.168.1.70:/home/pi/bin
-fi
 
