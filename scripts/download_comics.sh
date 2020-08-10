@@ -27,7 +27,7 @@ then
     $DIR/comics-downloader -format=cbr -url=$URL -output=$DEST
 
     if [[ -n "$2" && "$2" == "clear" ]]; then
-        cat "$_file" >> "$URL_PATHhistorico.txt"
+        cat "$_file" >> "$URL_PATH"historico.txt
         cat /dev/null > "$_file"
     fi
 
