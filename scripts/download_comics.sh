@@ -31,7 +31,11 @@ then
         cat /dev/null > "$_file"
     fi
 
-    $DIR/../utils/pushbullet.sh "Descarga de comics finalizada."
+    $DIR/../utils/pushbullet.sh "Descarga de comics finalizada. Actualizando librería."
+
+    YACReaderLibraryServer update-library $DEST
+
+    $DIR/../utils/pushbullet.sh "Librería actualizada."
 else
     $DIR/../utils/pushbullet.sh "El fichero esta vacio" "$_file"
 fi
