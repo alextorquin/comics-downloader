@@ -21,5 +21,5 @@ go build -o $DIR/target/comics-downloader/comics-downloader $DIR/cmd/downloader
 cp scripts/* target/comics-downloader/
 cp -rf target/comics-downloader $DEST
 
-ln -s $DEST/comics-downloader/download_comics.sh /usr/bin/download_comics
+sudo ln -s $DEST/comics-downloader/download_comics.sh /usr/bin/download_comics
 
