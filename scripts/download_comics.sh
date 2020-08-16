@@ -13,12 +13,12 @@ else
 fi
 
 _file="$URL_PATH$1"
-[ $# -eq 0 ] && { echo "Usage: $0 filename"; exit 1; }
-[ ! -f "$_file" ] && { $DIR/../utils/pushbullet.sh "Error: $0 file not found."; exit 2; }
+[ $# -eq 0 ] && { echo "Usage: $1 filename"; exit 1; }
+[ ! -f "$_file" ] && { $DIR/../utils/pushbullet.sh "Error: No existe el fichero $1 ."; exit 2; }
  
 if [ -s "$_file" ] 
 then
-    $DIR/../utils/pushbullet.sh "Descarga de comics iniciada."
+    $DIR/../utils/pushbullet.sh "Descarga de comics $1 iniciada."
 
     URL=($(cat "$_file" | tr -s "\n" ","))
 
@@ -31,11 +31,11 @@ then
         cat /dev/null > "$_file"
     fi
 
-    $DIR/../utils/pushbullet.sh "Descarga de comics finalizada. Actualizando librería."
+    $DIR/../utils/pushbullet.sh "Descarga de comics $1 finalizada. Actualizando librería."
 
     YACReaderLibraryServer update-library $DEST
 
     $DIR/../utils/pushbullet.sh "Librería actualizada."
 else
-    $DIR/../utils/pushbullet.sh "El fichero esta vacio" "$_file"
+    $DIR/../utils/pushbullet.sh "El fichero $1 esta vacio"
 fi
